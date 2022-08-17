@@ -1,6 +1,6 @@
 # Laravel Config Dump 🚚
 
-Dumps all the ENV keys that a laravel codebase uses. This could probably be done with a clever sequence of `grep` and `uniq`, but here we are.
+Dumps all the ENV keys that a Laravel codebase uses. This could probably be done with a clever sequence of `grep` and `uniq`, but here we are.
 
 ## Install 
 
