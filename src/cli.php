@@ -38,7 +38,8 @@ try {
     }
   }
 
-  foreach ($allNames as $name) {
+  $uniqueNames = array_unique($allNames);
+  foreach ($uniqueNames as $name) {
     echo $name . "\n";
   }
 } catch (Error $error) {
