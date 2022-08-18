@@ -42,16 +42,10 @@ Outputs all the environmental keys referenced in the application from analysis o
 composer install
 ```
 
-## Usage
-
-```
-./lcd path-to-php-project
-```
-
 ## Example 
 
 For an example, you can run the script against the `data` folder.
 
 ```
-./lcd data
+./lcd env data
 ```
