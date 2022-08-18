@@ -6,10 +6,8 @@ use CwoodStrib\LaravelConfigDump\Visitors\EnvCallVisitor;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 
-
 class Env implements Command
 {
-
   private \RecursiveIteratorIterator $iterator;
   private Parser $parser;
   private NodeTraverser $traverser;

@@ -7,8 +7,6 @@ use PhpParser\ParserFactory;
 use CwoodStrib\LaravelConfigDump\Visitors\EnvCallVisitor;
 use CwoodStrib\LaravelConfigDump\PHPFileIterator;
 use CwoodStrib\LaravelConfigDump\Commands\{Config, Env, Command};
-use CwoodStrib\LaravelConfigDump\MatchValue;
-use CwoodStrib\LaravelConfigDump\Visitors\ConfigCallVisitor;
 
 if (count($argv) < 3) {
   echo "Must provide command and path to Laravel Project";
