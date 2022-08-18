@@ -30,6 +30,12 @@ class MatchValue {
   }
 
   public function getValue() {
+    if ($this->type === self::DYNAMIC) {
+      if (!is_null($this->value)) {
+        return get_class($this->value);
+      }
+      return "";
+    }
     return $this->value;
   }
 

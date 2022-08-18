@@ -52,15 +52,13 @@ if (is_null($cmd)) {
 
 $results = $cmd->execute()->getOutput();
 
-// var_dumP($results);
-
-
-foreach ($results as $result) {
-  if ($result->getType() === MatchValue::ENV_KEY || $result->getType() === MatchValue::LITERAL) {
+// TODO: Re-think output 
+if ($cmd instanceof Config) {
+  foreach ($results as $result) {
     echo $result->getKey() . " | " . $result->getValue() . " | " . $result->getType() . "\n";
-  } else {
-    // Dynamic
-    echo $result->getKey() . " | | " . $result->getType() . "\n";
-
+  }
+} else {
+  foreach ($results as $result) {
+    echo $result . "\n";
   }
 }

@@ -46,6 +46,6 @@ class Env implements Command
   }
 
   public function getOutput(): array {
-    return $this->visitor->getNames();
+    return array_unique(array_values($this->visitor->getNames()));
   }
 }
