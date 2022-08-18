@@ -7,7 +7,7 @@ Dumps all the ENV keys that a Laravel codebase uses. This could probably be done
 
 ### config
 
-Parses the config files from a Laravel application. 
+Parses config files from a Laravel application and outputs categorized config names in the format `Laravel dot path format name | value | type`.
 
 ```
 ./lcd config ../my-laravel-app
