@@ -9,7 +9,7 @@ Assists analysis of Laravel application configuration
 Parses config files from a Laravel application and outputs categorized config names in the format `Laravel dot path format name | value | type`.
 
 ```
-./lcd config ../my-laravel-app
+./lcd config ../my-laravel-app/config
 ```
 
 Types are one of:
@@ -34,7 +34,7 @@ Outputs all the environmental keys referenced in the application from analysis o
 
 ## Current Limitations 
 - Only a subset of PHP expressions are supported for parsing in the config files. When something cannot be parsed, an error will be thrown.
-- Currently, inspection into non-`env` function calls is not supported. These show up as `DYNAMIC`, even though they may, in theory, contain calls to `env` internally. 
+- Currently, inspection into non-`env` function calls is not supported. These show up as `DYNAMIC`, even though they may, in theory, contain calls to `env` internally.   
 
 ## Install 
 
