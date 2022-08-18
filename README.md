@@ -13,7 +13,7 @@ Parses config files from a Laravel application and outputs categorized config na
 ```
 
 Types are one of:
-- `ENV_KEY` - A value derived from a call to the `env` function. Values are the key of the environmental value.
+- `ENV_KEY` - A value derived from a call to the `env` function. Values are the name of the environmental variable.
 - `LITERAL` - A literal value. 
 - `DYNAMIC` - The operation to determine this value cannnot be determined statically. Value is empty. 
 
