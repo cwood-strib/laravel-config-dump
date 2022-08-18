@@ -28,7 +28,7 @@ logging.api_key | LOGGING_API_KEY | ENV_KEY
 Outputs all the environmental keys referenced in the application from analysis of `env` function calls.
 
 ```
-./lcd config ../my-laravel-app
+./lcd env ../my-laravel-app
 ```
 
 
