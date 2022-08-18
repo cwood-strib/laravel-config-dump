@@ -1,5 +1,19 @@
 {
+    "name": "cwood-strib/laravel-config-dump",
+    "description": "Dump configuration and env dependencies from a laravel project",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "CwoodStrib\\LaravelConfigDump\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Christian Wood",
+            "email": "christian.wood@startribune.com"
+        }
+    ],
     "require": {
-        "nikic/php-parser": "^4.14"
+      "nikic/php-parser": "^4.14"
     }
 }

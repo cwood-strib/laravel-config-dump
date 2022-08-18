@@ -1,48 +1,66 @@
 <?php
 
 require_once(__DIR__ . "/../vendor/autoload.php");
-require_once(__DIR__ . "/EnvCallVisitor.php");
-require_once(__DIR__ . "/PHPFileIterator.php");
 
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
+use CwoodStrib\LaravelConfigDump\Visitors\EnvCallVisitor;
+use CwoodStrib\LaravelConfigDump\PHPFileIterator;
+use CwoodStrib\LaravelConfigDump\Commands\{Config, Env, Command};
+use CwoodStrib\LaravelConfigDump\MatchValue;
+use CwoodStrib\LaravelConfigDump\Visitors\ConfigCallVisitor;
 
-[$_, $path] = $argv;
+if (count($argv) < 3) {
+  echo "Must provide command and path to Laravel Project";
+  exit(1);
+}
 
-$directory = new \RecursiveDirectoryIterator($path, \FilesystemIterator::FOLLOW_SYMLINKS);
-$filter = new PHPFileIterator($directory);
-$iterator = new \RecursiveIteratorIterator($filter);
+[$_, $commandName, $projectPath] = $argv;
 
-$parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+// TODO: string is a very loose type for this
+function makeIterator(string $path): RecursiveIteratorIterator {
+  $directory = new \RecursiveDirectoryIterator($path, \FilesystemIterator::FOLLOW_SYMLINKS);
+  $filter = new PHPFileIterator($directory);
+  return new \RecursiveIteratorIterator($filter);
+}
 
-try {
-  $allNames = [];
-  foreach ($iterator as $entry) {
-    $fullPath = $entry->getPath() . "/" . $entry->getFileName();
-
-    // TODO: Error handling 
-    $code = file_get_contents($fullPath);
-
-    $ast = $parser->parse($code);
-
-    $traverser = new NodeTraverser();
-    $envCallVisitor = new EnvCallVisitor();
-    $traverser->addVisitor($envCallVisitor);
-    $traverser->traverse($ast);
-
-    $names = $envCallVisitor->getNames();
-
-    // array_merge?
-    foreach ($names as $name) {
-      $allNames[] = $name;
-    }
+function makeCommand(string $name, string $projectPath): ?Command {
+  switch ($name) {
+    case "config": 
+      $iterator = makeIterator($projectPath);
+      $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+      $traverser = new NodeTraverser();
+      $configCallVisitor = new ConfigCallVisitor();
+      $traverser->addVisitor($configCallVisitor);
+      return new Config($iterator, $parser, $traverser, $configCallVisitor);
+    case "env": 
+      $iterator = makeIterator($projectPath);
+      $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+      $traverser = new NodeTraverser();
+      $envCallVisitor = new EnvCallVisitor();
+      $traverser->addVisitor($envCallVisitor);
+      return new Env($iterator, $parser, $traverser, $envCallVisitor);
   }
+}
 
-  $uniqueNames = array_unique($allNames);
-  foreach ($uniqueNames as $name) {
-    echo $name . "\n";
+$cmd = makeCommand($commandName, $projectPath);
+
+if (is_null($cmd)) {
+  echo "Invalid command provided: " . $commandName;
+  exit(1); 
+}
+
+$results = $cmd->execute()->getOutput();
+
+// var_dumP($results);
+
+
+foreach ($results as $result) {
+  if ($result->getType() === MatchValue::ENV_KEY || $result->getType() === MatchValue::LITERAL) {
+    echo $result->getKey() . " | " . $result->getValue() . " | " . $result->getType() . "\n";
+  } else {
+    // Dynamic
+    echo $result->getKey() . " | | " . $result->getType() . "\n";
+
   }
-} catch (Error $error) {
-  echo "Parse error: {$error->getMessage()}\n";
-  return;
 }

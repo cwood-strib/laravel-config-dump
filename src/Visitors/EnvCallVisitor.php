@@ -1,5 +1,7 @@
 <?php
 
+namespace CwoodStrib\LaravelConfigDump\Visitors;
+
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node\Expr\FuncCall;
@@ -7,7 +9,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Expr\Variable;
 
 class EnvCallVisitor extends NodeVisitorAbstract {
-
   private array $names = [];
 
   public function getNames(): array {
@@ -24,7 +25,7 @@ class EnvCallVisitor extends NodeVisitorAbstract {
       return $node->name->name;
     }
 
-    return "";
+    return null; 
   }
 
   public function enterNode(Node $node) {
@@ -32,7 +33,7 @@ class EnvCallVisitor extends NodeVisitorAbstract {
         $name = $this->extractName($node);
 
         if (is_null($name)) {
-          throw new Error("Failed extracting name from node: " . get_class($node));
+          throw new \Error("Failed extracting name from node: " . get_class($node));
         }
 
         if ($name === "env") {

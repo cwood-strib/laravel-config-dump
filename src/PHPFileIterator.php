@@ -1,5 +1,7 @@
 <?php
 
+namespace CwoodStrib\LaravelConfigDump;
+
 class PHPFileIterator extends \RecursiveFilterIterator
 {
   public function accept(): bool
