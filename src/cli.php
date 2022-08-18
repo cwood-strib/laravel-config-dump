@@ -27,12 +27,12 @@ function makeIterator(string $path): RecursiveIteratorIterator {
 function makeCommand(string $name, string $projectPath): ?Command {
   switch ($name) {
     case "config": 
-      $iterator = makeIterator($projectPath);
       $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
-      $traverser = new NodeTraverser();
-      $configCallVisitor = new ConfigCallVisitor();
-      $traverser->addVisitor($configCallVisitor);
-      return new Config($iterator, $parser, $traverser, $configCallVisitor);
+      $path = dirname(__DIR__) . "/" . $projectPath; 
+      if (strpos($path, "config") === false) {
+        throw new Error("Must point to config directory in project");
+      }
+      return new Config($path, $parser);
     case "env": 
       $iterator = makeIterator($projectPath);
       $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);

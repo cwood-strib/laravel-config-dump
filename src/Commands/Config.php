@@ -14,34 +14,25 @@ use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 
 class Config implements Command {
-
-  private \RecursiveIteratorIterator $iterator;
+  private string $rootDir;
   private Parser $parser;
-  private $uniqueReturnTypes = [];
   private $values = [];
 
   public function __construct(
-    \RecursiveIteratorIterator $iterator, 
-    Parser $parser, 
-    NodeTraverser $traverser, 
-    ConfigCallVisitor $visitor)
-  {
-    $this->iterator = $iterator;
+    string $rootDir,
+    Parser $parser
+  ) {
+    $this->rootDir = $rootDir;
     $this->parser = $parser;
-    $this->traverser = $traverser;
-    $this->visitor = $visitor;
   }
 
   public function execute() {
-    $path = __DIR__ . "/../../../news-platform/config";
+    $path = $this->rootDir;
 
     $iterator = new \RecursiveDirectoryIterator($path);
 
     foreach ($iterator as $entry) {
-      // if($entry->isDot()) continue;
       if ($entry->isFile()) {
-        // echo $entry->getBasename() . "\n";
-
         $fullPath = $entry->getPath() . "/" . $entry->getFileName();
 
         $code = file_get_contents($fullPath);
@@ -86,6 +77,8 @@ class Config implements Command {
   }
 
   public function makeMatch(string $key, $node, $filePath): MatchValue {
+    // TODO: Broad refactor to unpack traverse expressions to try to find env calls
+
     switch (get_class($node)) {
       case 'PhpParser\Node\Scalar\String_':
         return MatchValue::fromLiteral($key, $node->value, $filePath);
@@ -95,6 +88,8 @@ class Config implements Command {
       case 'PhpParser\Node\Expr\ConstFetch':
         // TODO: analyse if we can get literal value 
         return MatchValue::fromDynamic($key, $node, $filePath); 
+      case 'PhpParser\Node\Expr\UnaryMinus': 
+        return MatchValue::fromLiteral($key, "-" . $node->expr->value, $filePath);
       case 'PhpParser\Node\Expr\FuncCall': 
         $name = $this->extractFunctionName($node);
 
@@ -122,7 +117,7 @@ class Config implements Command {
         return MatchValue::fromDynamic($key, $node, $filePath);
       default: 
         var_dump($node);
-        throw new \Error("Cannot unwrap value of type" . get_class($node));
+        throw new \Error("Cannot unwrap value of $key of type" . get_class($node));
         break;
       }
   }
