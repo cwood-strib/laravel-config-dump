@@ -7,6 +7,7 @@ use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Scalar\String_;
 
 class EnvCallVisitor extends NodeVisitorAbstract {
   private array $names = [];
@@ -21,7 +22,6 @@ class EnvCallVisitor extends NodeVisitorAbstract {
       return $name;
     }
 
-    // TODO: Mark this somehow as a variable
     if (isset($node->name) && $node->name instanceof Variable) {
       return $node->name->name;
     }
@@ -40,6 +40,11 @@ class EnvCallVisitor extends NodeVisitorAbstract {
         if ($name === "env") {
           [$envVarArg] = $node->args;
           $envVarString = $envVarArg->value;
+
+          if (!($envVarString instanceof String_)) {
+            throw new \Error("Found argument of type " . get_class($envVarString) . ". Analysis currently only supports string literal arguments.");
+          }
+
           $envVarName = $envVarString->value;
           $this->names[] = $envVarName;
         }
