@@ -21,6 +21,7 @@ class EnvCallVisitor extends NodeVisitorAbstract {
       return $name;
     }
 
+    // TODO: Mark this somehow as a variable
     if (isset($node->name) && $node->name instanceof Variable) {
       return $node->name->name;
     }
